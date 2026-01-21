@@ -104,7 +104,7 @@ export const InteractiveHero = () => {
       <NoiseOverlay />
 
       {/* Navigation */}
-      <nav className="absolute top-0 left-0 w-full p-4 md:p-10 flex justify-between items-start z-50 pointer-events-none mix-blend-difference text-white md:text-black md:mix-blend-normal">
+      {/* <nav className="absolute top-0 left-0 w-full p-4 md:p-10 flex justify-between items-start z-50 pointer-events-none mix-blend-difference text-white md:text-black md:mix-blend-normal">
         <div className="flex gap-4 md:gap-12 pointer-events-auto">
           <a href="#about" className="hover:underline font-black text-xl md:text-3xl uppercase tracking-tighter">* O MNIE</a>
         </div>
@@ -117,7 +117,7 @@ export const InteractiveHero = () => {
         <div className="flex gap-4 md:gap-12 pointer-events-auto">
           <a href="#contact" className="hover:underline font-black text-xl md:text-3xl uppercase tracking-tighter">KONTAKT</a>
         </div>
-      </nav>
+      </nav> */}
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center relative z-0 mt-12 md:mt-0">

@@ -1,4 +1,6 @@
 ---
+import OverlayUI from '../components/Main/OverlayUI';
+import Navbar from '../components/Main/Navbar';
 import Layout from '../layouts/Layout.astro';
 import Footer from '../layouts/Footer.astro';
 import InteractiveHero from '../components/Main/InteractiveHero';
@@ -15,6 +17,13 @@ const sortedProjects = allProjects.sort((a, b) => a.data.order - b.data.order);
 
 <Layout>
 	<main class="flex flex-col min-h-screen">
+        <!-- Interactive Hero -->
+		<!-- <Navbar client:load onConsultationClick={() => {
+			const el = document.getElementById('contact');
+			el?.scrollIntoView({ behavior: 'smooth' });
+		  }} /> -->
+		<!-- Overlay UI -->
+		<OverlayUI client:load />
 		<!-- Interactive Hero -->
 		<InteractiveHero client:load />
 		
