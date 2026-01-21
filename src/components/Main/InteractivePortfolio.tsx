@@ -285,7 +285,7 @@ const StackSection = ({
         <h2
   className={`
     pointer-events-none select-none
-    absolute bottom-60 right-8
+    absolute bottom-70 ${type === 'poster' ? 'left-8' : 'right-8'}
     text-5xl md:text-6xl lg:text-7xl
     font-black uppercase tracking-tighter leading-none
     
