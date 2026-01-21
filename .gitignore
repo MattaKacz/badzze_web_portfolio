@@ -34,3 +34,6 @@ coverage/
 
 # OS metadata
 Thumbs.db
+
+# Local Netlify folder
+.netlify

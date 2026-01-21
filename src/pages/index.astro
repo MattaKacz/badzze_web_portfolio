@@ -1,11 +1,59 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import Footer from '../layouts/Footer.astro';
+import InteractiveHero from '../components/Main/InteractiveHero';
+import PortfolioSection from '../components/Main/PortfolioSection.astro';
+import AboutSection from '../components/Main/AboutSection.astro';
+import ContactSection from '../components/Main/ContactSection.astro';
+import { ProjectModal } from '../components/Main/ProjectModal';
+import { getCollection } from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Pobierz projekty z kolekcji
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Layout>
-	<Welcome />
+	<main class="flex flex-col min-h-screen">
+		<!-- Interactive Hero -->
+		<InteractiveHero client:load />
+		
+		<!-- Sekcja O Mnie -->
+		<AboutSection />
+		
+		<!-- Sekcja Portfolio -->
+		<PortfolioSection projects={sortedProjects} />
+		
+		<!-- Modal Projektu (Client Load - musi obsługiwać URL) -->
+		<ProjectModal client:only="react" projects={sortedProjects} />
+		
+		<!-- Sekcja Kontakt -->
+		<ContactSection />
+	</main>
+
+	<Footer />
+
+	<!-- Skrypt do animacji scrolla -->
+	<script>
+		// Prosty IntersectionObserver dla elementów z atrybutem data-reveal
+		// Dodaje klasę .is-visible gdy element wejdzie w viewport
+		document.addEventListener('DOMContentLoaded', () => {
+			const observerOptions = {
+				threshold: 0.1, // Uruchom gdy 10% elementu jest widoczne
+				rootMargin: "0px 0px -50px 0px"
+			};
+
+			const observer = new IntersectionObserver((entries) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('is-visible');
+						observer.unobserve(entry.target); // Animuj tylko raz
+					}
+				});
+			}, observerOptions);
+
+			const revealElements = document.querySelectorAll('[data-reveal]');
+			revealElements.forEach(el => observer.observe(el));
+		});
+	</script>
 </Layout>

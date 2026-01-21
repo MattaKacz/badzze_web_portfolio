@@ -1,0 +1,140 @@
+---
+import { Button } from '../ui/button';
+
+const PROFILE_IMAGE = "https://images.unsplash.com/photo-1543852786-1cf6624b9987?q=80&w=1200&auto=format&fit=crop";
+---
+
+<section id="about" class="relative w-full overflow-clip bg-[#f5f2eb] text-black">
+    <div class="absolute inset-0 pointer-events-none opacity-40">
+        <div class="absolute -top-24 left-10 h-64 w-64 rounded-full bg-white/60 blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-white/70 blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-6 py-24 md:py-28 relative flex flex-col">
+        <div class="flex flex-col items-center text-center gap-4">
+            <p class="font-display text-2xl md:text-3xl leading-none">Arkadiusz Kaczor</p>
+            <p class="text-xl md:text-2xl font-medium leading-tight">
+                projektant graficzny <br class="hidden md:block" />
+                i dyrektor artystyczny
+            </p>
+        </div>
+
+        <div class="mt-10 md:mt-12 flex flex-col items-center gap-10 flex-1">
+            <div class="relative w-[160px] h-[160px] md:w-[190px] md:h-[190px]">
+                <!-- Removed border/shadow frame div -->
+                <img
+                    src={PROFILE_IMAGE}
+                    alt="Zdjęcie profilowe"
+                    class="about-photo relative z-10 w-full h-full rounded-[18px] object-cover"
+                    loading="lazy"
+                    data-blur-on-scroll
+                />
+
+                <div class="absolute -right-16 top-2 hidden md:block">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" class="text-black/80">
+                        <path d="M8 12c20 6 38 24 44 46M52 44l10 16M54 50l16-8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="max-w-3xl text-center relative py-8 px-6 md:px-10">
+                <!-- Blurred background image behind text -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-3xl">
+                    <img 
+                        src={PROFILE_IMAGE} 
+                        alt="" 
+                        class="w-[70%] max-w-2xl h-[70%] object-contain blur-[4px] opacity-40"
+                        aria-hidden="true"
+                    />
+                </div>
+
+                <p class="relative z-10 text-3xl md:text-5xl leading-tight font-medium tracking-tight">
+                    <span class="font-display italic"> Hej! </span> Jestem multidyscyplinarnym projektantem graficznym i dyrektorem artystycznym. Zajmuję się plakatem,
+                    okładkami, składem, brandingiem, mediami społecznościowymi i wieloma innymi kreatywnymi rzeczami.
+                    Uwielbiam projekty, które mają znaczenie
+                    <span class="font-display italic"> (i trochę luzu) </span>
+                    — takie, w których można połączyć emocje, estetykę i pomysł :)
+                </p>
+            </div>
+        </div>
+
+        <!-- Floating Button -->
+        <div class="pointer-events-none relative">
+            <div
+                class="floating-cta pointer-events-auto fixed right-4 md:right-10 z-50 transition-opacity duration-200"
+                style="bottom: 24px;"
+                data-floating-button
+            >
+                <Button
+                    size="lg"
+                    className="rounded-[12px] h-12 px-6 text-base font-medium border-2 border-black bg-white text-black shadow-[4px_4px_0px_rgba(0,0,0,0.6)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.6)] transition-all"
+                >
+                    Umów się na konsultację
+                </Button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const section = document.querySelector<HTMLElement>('#about');
+    const photo = section?.querySelector<HTMLElement>('[data-blur-on-scroll]');
+    const floatingButton = document.querySelector<HTMLElement>('[data-floating-button]');
+    const footer = document.querySelector<HTMLElement>('footer');
+    let rafId = 0;
+
+    const updateUI = () => {
+        rafId = 0;
+        if (!section || !photo) return;
+
+        const startOffset = section.offsetTop + 120;
+        const scrollY = window.scrollY;
+        const distance = 420;
+        const rawProgress = (scrollY - startOffset) / distance;
+        const progress = Math.max(0, Math.min(1, rawProgress));
+        const blurValue = progress * 12;
+        const scaleValue = 1 - (progress * 0.03);
+
+        photo.style.filter = `blur(${blurValue.toFixed(2)}px)`;
+        photo.style.transform = `scale(${scaleValue.toFixed(3)})`;
+
+        if (floatingButton && section) {
+            const margin = 24;
+            const sectionTop = section.offsetTop;
+            const hasReachedSection = scrollY >= sectionTop;
+
+            if (!hasReachedSection) {
+                floatingButton.style.position = 'absolute';
+                floatingButton.style.bottom = `${margin}px`;
+                return;
+            }
+
+            floatingButton.style.position = 'fixed';
+            if (footer) {
+                const footerTop = footer.getBoundingClientRect().top;
+                const overlap = Math.max(0, window.innerHeight - footerTop + margin);
+                const bottom = Math.max(margin, overlap);
+                floatingButton.style.bottom = `${bottom}px`;
+                return;
+            }
+
+            floatingButton.style.bottom = `${margin}px`;
+        }
+    };
+
+    const requestUpdate = () => {
+        if (rafId) return;
+        rafId = window.requestAnimationFrame(updateUI);
+    };
+
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate);
+    requestUpdate();
+</script>
+
+<style>
+    #about .about-photo {
+        transition: filter 160ms linear, transform 160ms linear;
+        will-change: filter, transform;
+    }
+</style>
